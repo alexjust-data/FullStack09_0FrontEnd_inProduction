@@ -1,4 +1,4 @@
-# KeepCoding Web Bootcamp XV - Frontend PRO
+# Bootcamp - Frontend PRO
 
 Proyecto del módulo de Frontend PRO del Bootcamp de Web de KeepCoding.
 
