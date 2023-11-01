@@ -194,6 +194,172 @@ ahora importamos
 
 
 
+**sourcemaps**
+
+con esta herramiento el compilador entiende el origen de nuestra archivo, definimos nuestro sourmaps para definir donde está el origen de nuestra aplicacion `devtool: 'inline-souce-map',`
+
+```js
+module.exports = {
+    entry: {
+        index: './src/index.js',
+        app: './src/app.js',
+    },
+    mode: 'development', 
+    devtool: 'inline-source-map',
+    output:{
+        filename: '[name].bundle.js',
+        path: __dirname + '/dist', 
+        clean: true
+    }
+}
+```
+
+
+Entonces ahora sabemos cómo crear el bander. Y sabemos porque es necesario crear ese software, ya que podremos trabajar con archivos.Todo lo descentralizado, que queramos, por decirlo alguna manera, en tantos archivos como gramos. Generaremos un único archivo de destino.Pero incluso cuando trabajamos con nuestro archivo de destino en nuestro fichero Html y necesitamos investigarlo.Un conchavelo que sigue con Charlotte. Nos vayamos a ver dónde se pinta. Nuestras herramientas de desarrollo son capaces de decirnos en qué archivo y en qué línea
+
+app.js
+```js
+const hola = "hola";
+const mundo = "mundo";
+
+
+console.log(`${hola} ${mundo}`);
+
+export function printConsole(text) {
+    console.log(text)
+}
+
+// así exportamos la función como una variable
+export default {
+    printConsole: printConsole
+}
+```
+
+```js
+import _ from 'lodash';
+import join from 'lodash/join';
+import { printConsole } from './app';
+// así importamos la función como una variable
+import printConsole from './app';
+import app from './app';
+
+const hello = "hola";
+const mundo = "mundo"; 
+
+console.log(`${hello} ${mundo}`);
+console.log(_.join([hello, mundo]));
+console.log(join([hello, mundo]));
+
+printConsole(`${hello} ${mundo}`);
+app.printConsole(`${hello} ${mundo}`);
+```
+
+```sh
+npm run build
+```
+(base) alex@Alexs-MacBook-Pro frontend-pro-main % git add .
+(base) alex@Alexs-MacBook-Pro frontend-pro-main % git commit -m "Webpack1: initial config"
+
+git tag -m  "Webpack1: initial config" -a 04.Webpack-1
+---
+
+empezamos a trabajar sobre la aplicacion y la vamos a migrar a una aplicacion profesinal.
+
+Vacío la carpeta `src` y necesito ahí dentro un entryPoint para cada una de las páginas html. Si tenemos 3 páginas html vamoa  crear 3 entryPoints en JS.
+
+en nuestro caso
+
+src/contactPage.js
+src/indexPage.js
+src/teamsPage.js
+
+si te fijas en los html, debajo donde está el scrip verás que has generado un scrip que te dice que en la carpeta js están tus nuevos archivos
+
+```html
+    <script src="js/home/main.js"></script>
+
+    <!-- Referencias                        -->
+    <!-- https://harrypotter.fandom.com/    -->
+    <!-- https://www.wizardingworld.com/    -->
+    <!-- Fin                                -->
+```
+
+vamos a la carpeta `home` y nos la traemos a `src/home`. Al archivo dentro de `home/main.js` le cambio el nombre a `index.js`
+
+Dentro de `src` tenemos `home.js` vacío, voy y le digo:
+
+```js
+import './home' // porque dentro está index.js
+```
+cambio las entradas
+
+```js
+module.exports = {
+    entry: {
+        home: './src/homePage.js',
+        teams: './src/teamsPage.js',
+        contact: './src/contactPage.js',
+    },
+    mode: 'development', 
+    devtool: 'inline-source-map',
+    output:{
+        filename: '[name].bundle.js',
+        path: __dirname + '/dist', 
+        clean: true
+    }
+}
+```
+
+npm run build
+
+
+voy a index.html
+
+```html
+    <script src="dist/home.bundle.js"></script>
+
+    <!-- Referencias                        -->
+    <!-- https://harrypotter.fandom.com/    -->
+    <!-- https://www.wizardingworld.com/    -->
+    <!-- Fin                                -->
+```
 
 
 
+---
+
+vamos a la carpeta `/js` y nos arrastramos las carpetas `team` y `form` dentro de `scr`. Eliminamos la carpeta `js` vacía.
+
+para no tener que llamar a `form/main` o `team/main` renombramos enstos archivos como `form/index` o `team/index`
+
+luego en los archivos 
+
+teamsPage.js',
+contactPage.js', 
+
+añadimos
+
+import './form'
+import './team'
+
+
+Ahora cambiamos los scriipts de los html
+
+```html
+    <script type="module" src="dist/teams.bundle.js"></script>
+
+    <!-- Referencias                        -->
+    <!-- https://harrypotter.fandom.com/    -->
+    <!-- https://www.wizardingworld.com/    -->
+    <!-- Fin     
+```
+
+
+```html
+    <script type="module" src="dist/contact.bundle.js"></script>
+
+    <!-- Referencias                        -->
+    <!-- https://harrypotter.fandom.com/    -->
+    <!-- https://www.wizardingworld.com/    -->
+    <!-- Fin                                -->
+```
