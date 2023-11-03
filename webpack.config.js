@@ -7,6 +7,7 @@ module.exports = {
         home: './src/homePage.ts',
         teams: './src/teamsPage.ts',
         contact: './src/contactPage.ts',
+        notFound: './src/notFoundPage.ts',
     },
     mode: 'development', 
     devtool: 'inline-source-map',
@@ -41,15 +42,22 @@ module.exports = {
             //template que buscará para compilar
             template: './src/templates/index.html',
             filename: 'index.html',
-            chunks: ['home'], 
+            chunks: ['home'], // añado esta linea para selecciono el bundels de output
         }),
         new HtmlWebpackPlugin({
             template: './src/templates/teams.html',
-            filename: 'teams.html'
+            filename: 'teams.html',
+            chunks: ['teams']
         }),
         new HtmlWebpackPlugin({
             template: './src/templates/contact.html',
-            filename: 'contact.html'
+            filename: 'contact.html',
+            chunks: ['contact']
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/templates/404.html',
+            filename: '404.html',
+            chunks: ['notFound']
         }),
     ]
 }

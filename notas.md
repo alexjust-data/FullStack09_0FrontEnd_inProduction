@@ -705,6 +705,7 @@ Todo lo que está fuera de `src` como mucho serán configuraciones, todo lo que 
    ```
 
 Instalamos puligin para trabajat html
+
 ```sh
 npm i -D html-webpack-plugin
 ```
@@ -726,11 +727,15 @@ debajo de modules
 ```
 
 genero carpeta `src/templates/` y meto dentro del `index.html`.  
-En el index.html no necesitamos el script este: ` <script type="module" src="dist/home.bundle.js"></script>` porque webpack lo incrustará
+
+En el index.html no necesitamos el script este: 
+` <script type="module" src="dist/home.bundle.js"></script>` 
+porque webpack lo incrustará
 
 Si te vas a `dist` verás un index.html con lo mismo, y a partir de ahora la app atacará a este `dist/index.html` cuando compile la app.
 
 Verás ahora que la imagen del logo tiene problemas. Veta al `template/index.html` y busca la linea del logo.
+
 cambias esto:
 ```html
 <img src="../img/logo.png"" alt="Quidditch Games XV">
@@ -763,14 +768,12 @@ Ahora tenemos errores porque no lee las imagenes por eso vamos a cargar el LOADE
                 exclude: /node_modules/,
             },
             {
-                test: /\.(png|jpg|gif)$/i, // metemos todas la imagenes
+                test: /\.(png|jpg|gif|webp|ico)$/i, // metemos todas la imagenes
                 type: 'asset/resource'
             }
         ]
     },
 ```
-
-
 
 
 si te vas a mirar el `dist/index.html`verás como el logo de la cabecera ha cambiado, ha añadido el hash de la imagen `<img src="9a96fe53e9bb753456d6.png" alt="Quidditch Games XV">`
@@ -787,10 +790,143 @@ volvemos al `template/index.html`
         <img src="<%=require("../img/logo.png")%>" alt="Harry Potter - Quidditch Games XV">
 ```
 
-aún tenemos herrores pero ahora lo veremos.
+aún tenemos errores pero ahora lo veremos.
 
 - Ahora migramos las otras html a dentro templates/
+- Acuerdate que al meterlas dentro de /templates dentro del html ya no hace falta el scrip js que importamos , so los borras de cada html `<script type="module" src="dist/contact.bundle.js"></script>` 
 - Cambiamos las lineas del logos `<img src="<%=require("../img/logo.png")%>"`
+- cambiamos así cualquier imagen de los html para que tengan la semantica requerida, es decir todas las imagenes como variables
+`<link rel="icon" type="image/png" href="<%=require("../img/favicon.ico")%>">`
   
   Cuando trabajemos con framesworks no haremos tantas cositas así
 
+
+  ---
+  todo esto nos genera ununico dist/index.html
+ y nosotros queremos 3. Es decir vamos a webpack.config y añadimos los html
+
+ ```js
+    plugins: [
+        new HtmlWebpackPlugin({
+            //template que buscará para compilar
+            template: './src/templates/index.html',
+            filename: 'index.html'
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/templates/teams.html',
+            filename: 'teams.html'
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/templates/contact.html',
+            filename: 'contact.html'
+        }),
+    ]
+ ```
+
+
+TRUCO: si tienes errores en browser, copia la funcion error, vete al buscador y mira donde te lleva que estes usando esa funcion.
+
+
+```js
+    plugins: [
+        new HtmlWebpackPlugin({
+            //template que buscará para compilar
+            template: './src/templates/index.html',
+            filename: 'index.html',
+            chunks: ['home'], // añado esta linea para selecciono el bundels de output
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/templates/teams.html',
+            filename: 'teams.html',
+            chunks: ['teams']
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/templates/contact.html',
+            filename: 'contact.html',
+            chunks: ['contact']
+        }),
+    ]
+```
+
+// nos da la posibilidad de seleccionar cuantos bundels queramos de los que hemos seleccionado aquí
+
+```js
+    output:{
+        filename: '[name].[chunkhash]bundle.js',
+        path: path.resolve( __dirname ,'dist' ),
+        // path.resolve( __dirname, '...' , '...', 'dist' ) podrías subir de directorios
+        clean: true
+    },
+```
+
+se te vas a inspeccionar el `index.html` verás que sólo tienes una linea de <script>
+`<script defer src="home.f1ee7d4016f34f56b72ebundle.js"></script></head>`
+antes de poner esto `chunks: ['home'], ` tenías más
+
+
+Nosotros podríamos utilizar un global entry point y usarlo en todos
+
+```js
+module.exports = {
+    entry: {
+        global: './src/homePage.ts',
+        home: './src/homePage.ts',
+        teams: './src/teamsPage.ts',
+        contact: './src/contactPage.ts',
+    },
+```
+entonces este global emntry point lo podemos utilizar en todos
+
+```js
+    plugins: [
+        new HtmlWebpackPlugin({
+            //template que buscará para compilar
+            template: './src/templates/index.html',
+            filename: 'index.html',
+            chunks: ['global', 'home'], // añado esta linea para selecciono el bundels de output
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/templates/teams.html',
+            filename: 'teams.html',
+            chunks: ['global','teams']
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/templates/contact.html',
+            filename: 'contact.html',
+            chunks: ['global','contact']
+        }),
+    ]
+```
+
+esto es más rápido porque unicamente tiene los recursos quenecesita.
+
+Vamos a pasar 404.html y realizar todo el proceso hecho hasta aquí para esta página:
+1. `./404.html` lo pasamos a `./templates/404.html`
+2. creo el `./css/_404.css` dentro está el css original
+3. creo `404.css` dento de la carpeta de css
+   1. habiendo importado dentro del archivo
+   ```js
+    @forward './partials/reset';
+    @forward './partials/common';
+    @forward './partials/404';
+   ```
+4. creo el `./src/notFoundPages.ts`
+   1. dentro solo hay `import './css/404.css'`
+5. en `webpack.config` le hacemos la entrada, para que cargue el css
+
+    ```js
+        entry: {
+        home: './src/homePage.ts',
+        teams: './src/teamsPage.ts',
+        contact: './src/contactPage.ts',
+        notFound: './src/notFoundPage.ts',
+    },
+    ```
+6. Le añadimos el plugin
+    ```js
+        new HtmlWebpackPlugin({
+            template: './src/templates/404.html',
+            filename: '404.html',
+            chunks: ['notFound']
+        }),
+    ```

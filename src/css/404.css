@@ -1,0 +1,3 @@
+@forward './partials/reset';
+@forward './partials/common';
+@forward './partials/404';
