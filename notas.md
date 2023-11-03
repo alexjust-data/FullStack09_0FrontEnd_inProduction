@@ -900,19 +900,24 @@ entonces este global emntry point lo podemos utilizar en todos
 
 esto es más rápido porque unicamente tiene los recursos quenecesita.
 
+
+---
+
+
 Vamos a pasar 404.html y realizar todo el proceso hecho hasta aquí para esta página:
 1. `./404.html` lo pasamos a `./templates/404.html`
-2. creo el `./css/_404.css` dentro está el css original
-3. creo `404.css` dento de la carpeta de css
+2. eln el html todas las imagenes las hacemos variables
+3. creo el `./css/_404.css` dentro está el css original
+4. creo `404.css` dento de la carpeta de css
    1. habiendo importado dentro del archivo
    ```js
     @forward './partials/reset';
     @forward './partials/common';
     @forward './partials/404';
    ```
-4. creo el `./src/notFoundPages.ts`
+5. creo el `./src/error.ts`
    1. dentro solo hay `import './css/404.css'`
-5. en `webpack.config` le hacemos la entrada, para que cargue el css
+6. en `webpack.config` le hacemos la entrada, para que cargue el css
 
     ```js
         entry: {
@@ -922,7 +927,7 @@ Vamos a pasar 404.html y realizar todo el proceso hecho hasta aquí para esta p�
         notFound: './src/notFoundPage.ts',
     },
     ```
-6. Le añadimos el plugin
+7. Le añadimos el plugin
     ```js
         new HtmlWebpackPlugin({
             template: './src/templates/404.html',
@@ -930,3 +935,22 @@ Vamos a pasar 404.html y realizar todo el proceso hecho hasta aquí para esta p�
             chunks: ['notFound']
         }),
     ```
+
+¿Tenemos que hacer un entry point para una página que solo hay css?
+- SI, al final puede que le metas lógica, entonces pasarás por el entrypoint
+
+
+---
+
+**DevServer**
+
+Ahora falta configurar nuestro entorno. Vamos a configurar nuestros escripts de desarrollo `package.json`
+
+```json
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch" // no hace falta instalar nada
+  },
+```
+
+

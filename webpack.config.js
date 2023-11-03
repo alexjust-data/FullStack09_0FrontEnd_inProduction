@@ -7,7 +7,7 @@ module.exports = {
         home: './src/homePage.ts',
         teams: './src/teamsPage.ts',
         contact: './src/contactPage.ts',
-        notFound: './src/notFoundPage.ts',
+        error: './src/errorPage.ts',
     },
     mode: 'development', 
     devtool: 'inline-source-map',
@@ -57,7 +57,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/templates/404.html',
             filename: '404.html',
-            chunks: ['notFound']
+            chunks: ['error'],
         }),
     ]
 }

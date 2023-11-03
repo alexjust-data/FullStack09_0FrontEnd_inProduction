@@ -4,7 +4,8 @@
   "description": "Proyecto del módulo de Frontend PRO del Bootcamp de Web de KeepCoding.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch" // no hace falta instalar nada
   },
   "keywords": [],
   "author": "",
