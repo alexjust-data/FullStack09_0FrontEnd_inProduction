@@ -1,9 +1,9 @@
 
 module.exports = {
     entry: {
-        home: './src/homePage.js',
-        teams: './src/teamsPage.js',
-        contact: './src/contactPage.js',
+        home: './src/homePage.ts',
+        teams: './src/teamsPage.ts',
+        contact: './src/contactPage.ts',
     },
     mode: 'development', 
     devtool: 'inline-source-map',
@@ -12,11 +12,19 @@ module.exports = {
         path: __dirname + '/dist', 
         clean: true
     },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+      },
     module: {
         rules: [
             {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
             }
         ]
     },

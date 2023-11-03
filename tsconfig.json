@@ -1,0 +1,15 @@
+// Estas son opciones de configuración para TypeScript en mi proyecto.
+// La opción "outDir" especifica la ubicación de los archivos compilados.
+// "noImplicitAny" garantiza que se especifiquen tipos de manera explícita.
+// ...
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "noImplicitAny": true,
+        "module": "es6",
+        "target": "es5",
+        "jsx": "react",
+        "allowJs": true,
+        "moduleResolution": "node"
+    }
+}

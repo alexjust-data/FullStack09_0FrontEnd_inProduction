@@ -363,3 +363,305 @@ Ahora cambiamos los scriipts de los html
     <!-- https://www.wizardingworld.com/    -->
     <!-- Fin                                -->
 ```
+
+---
+
+Ahora atacamos en archivo `css` y queremos simplificarlo al máximo posible. NOrmalmente tenemos más de dos estiles en cada html
+
+```html
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/team.css">
+
+```
+
+importamos dependencias
+
+```sh
+npm i -D css-loader style-loader
+
+
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "typescript": "^5.2.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+```
+
+1. Traemos la carpeta de estilos a `src`
+2. como los diferentes estils css son archivos parciales, es decir, que las diferentes páginas utilizar´n an algún momento diferentes css. Por convención se pone un guión de late del nombre del archivo. Es por convención, buena práctica, así cuando un desarrollador venga y lo veo lo entenderá. `_form.css`
+3. Para salvar las diferencias que puedan haber entre diferentes navegadores creamos el archivo `_reset.css` copiamos de la página por ejemplo https://meyerweb.com/eric/tools/css/reset/index.html
+4. Creamos archivos `src/css/home.css`, `src/css/team.css`, `src/css/contact.css`   
+5. Vamos a cada una de ellos. home.css
+
+```js
+// home.css
+@import url('./_common.css');
+@import url('./_home.css');
+@import url('./_reset.css');
+
+// team.css
+@import url('./_common.css');
+@import url('./_team.css');
+@import url('./_reset.css');
+
+// contact.css
+@import url('./_common.css');
+@import url('./_form.css');
+@import url('./_reset.css');
+```
+cambiamos los .js
+
+```js
+//teamPages.js
+import './team'
+import './css/team.css'
+//constctPages.js
+import './form'
+import './css/contact.css'
+//homePages.js
+import './home'
+import './css/home.css'
+```
+1. Cualquier cosa adicional que queramos que tenga nuestro css añadiremos en `webpack.config.js` nuestro `modulo:` y ahí definiremos tantas reglas como queramos.
+
+```sh
+    module: {
+        rules: [
+          {
+            test: /\.css$/i,
+            use: ['styl-loader', 'css-loader'], # esto cargará de derecha a izquierda
+          }
+        ]
+    }
+}
+```
+Esto significa que nuestros archivo `homePage.js` ya carga los estiles porque le he puesto la linea `import './css/home.css'` esto significa que nuestros html ya sobran estas lineas y se las quitamos a cada html:
+
+```html
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/home.css">
+```
+Esto es así porque le hemos cargado un archivo js que viene de 
+
+```html
+    <script type="module" src="dist/home.bundle.js"></script>
+```
+y dist/home.bundle.js se encargará de cargarlo todo, tanto la parte de js como css
+
+---
+
+
+webpack typescript https://webpack.js.org/guides/typescript/ sigo los pasos de aquí
+
+
+instalamos dependecnias
+
+```sh
+npm install --save-dev typescript ts-loader
+```
+
+creo archivo `tsconfig.json`
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node"
+  }
+}
+````
+
+me llevo las rules que me da la página web a `webpack.config.js`
+
+```sh
+
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      }
+
+      //también
+
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+      },
+````
+
+a `webpack.congif.js`
+
+```json
+module.exports = {
+    entry: {
+        home: './src/homePage.js',
+        teams: './src/teamsPage.js',
+        contact: './src/contactPage.js',
+    },
+    mode: 'development', 
+    devtool: 'inline-source-map',
+    output:{
+        filename: '[name].bundle.js',
+        path: __dirname + '/dist', 
+        clean: true
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+      },
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            }
+        ]
+    },
+}
+```
+
+
+En la carpeta `team/` cambio todas las extensiones de los archivos
+
+`scr/team/contactPage.ts`
+`scr/team/homePage.ts`
+`scr/team/teamsPage.ts`
+
+y cambiamos el nombre a las entradas
+
+```json
+module.exports = {
+    entry: {
+        home: './src/homePage.ts',
+        teams: './src/teamsPage.ts',
+        contact: './src/contactPage.ts',
+    },
+```
+
+verás que ha generado cosas en los bundlers
+
+
+A partir de ahora vamos a trabajar con typescript. Ahora vamos a tipar nuestra aplicación:
+
+1. CVamos a sobreescribir todos los nombres de archivos dentro de scr/../.. de js a ts
+
+ npm run build
+
+ y vemos los primeros errores de typescript. Hay que tiparlo, por ejemplo
+
+ ```js
+export const renderError = (fromId, formName, value) => {
+  const errorElement = document.querySelector(`#${fromId} .${formName}-error-message`);
+  errorElement.classList.add('show');
+  errorElement.textContent = value;
+};
+ ```
+
+ to
+
+ ```ts
+
+ ```
+
+ de
+
+ ```js
+const checkValidations = [
+    'patternMismatch',
+    'stepMismatch',
+    'tooLong',
+    'tooShort',
+    'typeMismatch',
+    'valueMissing',
+  ];
+  
+  const errorMessages = {
+    patternMismatch: 'Error en el patón definido',
+    stepMismatch: 'Valor númerico en un intervalo incorrecto',
+    tooLong: 'Valor demasiado largo',
+    tooShort: 'Valor demasiado corto',
+    typeMismatch: 'El tipo no es el correcto',
+    valueMissing: 'Campo requirido',
+  };
+  
+  export const getErrorMessages = (validateState: ) => {
+    if (validateState.valid) return '';
+    return checkValidations.reduce((acum, validateStateKeys) => {
+      if (validateState[validateStateKeys]) {
+        return `${acum} ${errorMessages[validateStateKeys]}`;
+      }
+      return acum;
+    }, '').trim();
+  };
+ ```
+
+ ```ts
+// Define un tipo para las validaciones
+type ValidationKey = 
+  | 'patternMismatch'
+  | 'stepMismatch'
+  | 'tooLong'
+  | 'tooShort'
+  | 'typeMismatch'
+  | 'valueMissing';
+
+// Usa el tipo anterior para la constante checkValidations y para el objeto errorMessages
+const checkValidations: ValidationKey[] = [
+    'patternMismatch',
+    'stepMismatch',
+    'tooLong',
+    'tooShort',
+    'typeMismatch',
+    'valueMissing',
+];
+
+const errorMessages: Record<ValidationKey, string> = {
+    patternMismatch: 'Error en el patón definido',
+    stepMismatch: 'Valor númerico en un intervalo incorrecto',
+    tooLong: 'Valor demasiado largo',
+    tooShort: 'Valor demasiado corto',
+    typeMismatch: 'El tipo no es el correcto',
+    valueMissing: 'Campo requirido',
+};
+
+// Define un tipo para el estado de validación. Todos los campos son opcionales
+// porque no sabemos si siempre se incluirán todos.
+interface ValidateState {
+    patternMismatch?: boolean;
+    stepMismatch?: boolean;
+    tooLong?: boolean;
+    tooShort?: boolean;
+    typeMismatch?: boolean;
+    valueMissing?: boolean;
+    valid?: boolean;
+}
+
+// Usa el tipo ValidateState para la función getErrorMessages
+export const getErrorMessages = (validateState: ValidateState): string => {
+    if (validateState.valid) return '';
+    return checkValidations.reduce((acum, validateStateKeys) => {
+        if (validateState[validateStateKeys]) {
+            return `${acum} ${errorMessages[validateStateKeys]}`;
+        }
+        return acum;
+    }, '').trim();
+};
+
+ ```
+
+yo uso chatgtp y lo repaso
+
+
+

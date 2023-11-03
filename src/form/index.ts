@@ -1,5 +1,5 @@
-import { getErrorMessages } from './validator.js';
-import { renderError, clearErrors } from './view.js';
+import { getErrorMessages } from './validator';
+import { renderError, clearErrors } from './view';
 
 const FORM_ID = 'contactForm';
 
@@ -13,7 +13,7 @@ const FORM_FIELDS = [
 
 contactForm.addEventListener('submit', evt => {
   evt.preventDefault();
-  const form = evt.target;
+  const form: HTMLFormElement = evt.target as any as HTMLFormElement;
   clearErrors(FORM_ID, FORM_FIELDS);
   FORM_FIELDS.forEach(field => {
     const errorMessage = getErrorMessages(form[field].validity);
