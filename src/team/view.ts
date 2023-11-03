@@ -1,9 +1,6 @@
 
 
-type Character = {
-    image: string;
-    name: string;
-};
+
 
 export function renderCharacters(house: string, characters: { image?: string; name: string }[]): void {
 
