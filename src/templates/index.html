@@ -13,7 +13,7 @@
     <meta property="og:image" content="https://keepcodingweb13.github.io/html-css-practica/images/social.png">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="img/favicon.ico">
+    <link rel="icon" type="image/png" href="<%=require("../img/favicon.ico")%>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
           <div class="container nav-container">
             <div class="logo">
                 <a href="/">
-                    <img src="img/logo.png" alt="Quidditch Games XV">
+                    <img src="<%=require("../img/logo.png")%>" alt="Quidditch Games XV">
                 </a>
               </div>
               <div class="hamburger-wrapper">
@@ -94,7 +94,7 @@
     </main>
     <!-- Footer -->
     <footer class="footer">
-        <img src="img/logo.png" alt="Harry Potter - Quidditch Games XV">
+        <img src="<%=require("../img/logo.png")%>" alt="Harry Potter - Quidditch Games XV">
         <span>&copy; Keep Coding -&nbsp;<script>document.write((new Date()).getFullYear())</script>&nbsp;all rigihts reserved</span>
         <div class="social">
             <a href="https://www.facebook.com/">
@@ -111,7 +111,6 @@
 
 
     
-    <script type="module" src="dist/home.bundle.js"></script>
 
     <!-- Referencias                        -->
     <!-- https://harrypotter.fandom.com/    -->

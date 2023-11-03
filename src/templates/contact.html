@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quidditch Games XV - Teams</title>
+    <title>Quidditch Games XV - Contact</title>
 
     <!-- SEO -->
-    <meta name="description" content="Quidditch Games XV - Teams">
+    <meta name="description" content="Quidditch Games XV - Contact">
     <meta name="author" content="KeepCoding">
     <meta property="og:title" content="Quidditch Games XV">
-    <meta property="og:description" content="Quidditch Games XV - Teams.">
+    <meta property="og:description" content="Quidditch Games XV - Contact.">
     <meta property="og:image" content="https://keepcodingweb13.github.io/html-css-practica/images/social.png">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="img/favicon.ico">
+    <link rel="icon" type="image/png" href="<%=require("../img/favicon.ico")%>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poltawski+Nowy:wght@400;500&family=Public+Sans&display=swap" rel="stylesheet">
-    
+
 
 </head>
 <body>
@@ -29,7 +29,7 @@
           <div class="container nav-container">
             <div class="logo">
                 <a href="/">
-                    <img src="img/logo.png" alt="Quidditch Games XV">
+                    <img src="<%=require("../img/logo.png")%>" alt="Quidditch Games XV">
                 </a>
               </div>
               <div class="hamburger-wrapper">
@@ -52,40 +52,36 @@
     <!-- Main -->
     <main>
         <section id="header">
-            <h1>Equipos Quidditch XV</h1>
+            <h1>Contacto</h1>
         </section>
 
-        <section id="teams" class="inner container">
+        <section id="contact" class="inner container">
             <h2>
-                Equipos participantes
+                Contacta con nosotros
             </h2>
-            <div class="teams-container">
-                <div class="team" id="gryffindor">
-                    <img src="img/teams/1.webp" alt="Gryffindor">
-                    <h3>Gryffindor</h3>
-                    <p>Equipo de la casa Gryffindor</p>
-                </div>
-                <div class="team" id="slytherin">
-                    <img src="img/teams/2.webp" alt="Slytherin">
-                    <h3>Slytherin</h3>
-                    <p>Equipo de la casa Slytherin</p>
-                </div>
-                <div class="team" id="ravenclaw">
-                    <img src="img/teams/3.webp" alt="Ravenclaw">
-                    <h3>Ravenclaw</h3>
-                    <p>Equipo de la casa Ravenclaw</p>
-                </div>
-                <div class="team" id="hufflepuff">
-                    <img src="img/teams/4.webp" alt="Hufflepuff">
-                    <h3>Hufflepuff</h3>
-                    <p>Equipo de la casa Hufflepuff</p>
-                </div>
+            <p>
+                Si tienes alguna duda o sugerencia, no dudes en ponerte en contacto con nosotros.
+            </p>
+            <div class="form-container">
+                <form id="contactForm" method="post" novalidate>
+                    <label for="name">Nombre</label>
+                    <input type="text" name="name" id="name" placeholder="Nombre" required>
+                    <span class="name-error-message error"></span>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Email" required>
+                    <span class="email-error-message error"></span>
+                    <label for="message">Mensaje</label>
+                    <textarea name="message" id="message" cols="30" rows="10" placeholder="Mensaje" required></textarea>
+                    <span class="message-error-message error"></span>
+                    <button type="submit" value="Enviar">Enviar</button>
+                </form>
+            </div>
         </section>
         
     </main>
     <!-- Footer -->
     <footer class="footer">
-        <img src="img/logo.png" alt="Harry Potter - Quidditch Games XV">
+        <img src="<%=require("../img/logo.png")%>" alt="Harry Potter - Quidditch Games XV">
         <span>&copy; Keep Coding -&nbsp;<script>document.write((new Date()).getFullYear())</script>&nbsp;all rigihts reserved</span>
         <div class="social">
             <a href="https://www.facebook.com/">
@@ -100,8 +96,7 @@
         </div>
     </footer>
 
-
-    <script type="module" src="dist/teams.bundle.js"></script>
+    
 
     <!-- Referencias                        -->
     <!-- https://harrypotter.fandom.com/    -->

@@ -661,7 +661,136 @@ export const getErrorMessages = (validateState: ValidateState): string => {
 
  ```
 
-yo uso chatgtp y lo repaso
+yo uso chatgtp y lo repaso. Tienes faena con eto.
 
 
+BABEL:
+Babel es un transpilador de JavaScript ampliamente utilizado que permite a los desarrolladores escribir código en la última versión de JavaScript y luego convertirlo a una versión anterior para garantizar la compatibilidad con navegadores y entornos más antiguos. En otras palabras, te permite utilizar características modernas de JavaScript que quizás no sean compatibles con todos los navegadores o entornos, y Babel se encarga de transformar ese código a una versión que sí lo sea.
+
+
+Camio esta linea del `webpack.config.js`
+
+```json
+filename: '[name].bundle.js',
+// por esta
+filename: '[name].[chunkhash]bundle.js',
+````
+
+este cambio hará que los archivos `dist/contact.31190688166584878b6c.bundle` nos encontremos el hash. Esto es lo normal porque loque queremos es  trabajar con elos minimos problemas de caché, de esta manera lo que estamos diciendo a webpack es que cada vez que hagamos una distribucion  nueva en nuestra app el fichero compilado se llamará diferente, por lo tanto si el navegador de cliente vuelve a pedir el archivo, para ese navegador será un archivo nuevo y se rescatará por primera vez. 
+
+si cargamos la app `npm run build` nuestro html no reconoce este js  
+<script type="module" src="dist/home.bundle.js"></script>   
+
+entonces hemos de trabajar con pugins de forma dinámica desde ahora con html.
+La diferencia entre plugin y loader es que :
+- cualquier cosa que empice por uno de nuestros `entrypoints`  y acabe trabajando con archivos pasarán por un loader. (slides, pag bundle your scripts)
+
+**plugins**
+
+se instalan como dependencias nuevas, cada uno tiene congif diferente, hay que mirar doc y ver como trabajan. 
+
+Ahora queremos salvar el problema del hash y manipular el html
+
+Todo lo que está fuera de `src` como mucho serán configuraciones, todo lo que esté dentro será nuetro código fuente.
+
+1. nos llevamos las imágenes `img` dentro de `src`
+2. compilamos `npm run build` y vemos que peta porque quiere solucionar una imagen que no existe ahora.
+   ERROR in ./src/css/_common.css (./node_modules/css-loader/dist/cjs.js!./src/css/_common.css) 5:36-84
+3. vamos a commons.css 
+   ```css
+     /* HEADER */
+     section#header {
+        background-image: url('../img/header.jpg');
+        ...
+   ```
+
+Instalamos puligin para trabajat html
+```sh
+npm i -D html-webpack-plugin
+```
+
+Vamos a `weppack.config.js`
+
+```js
+//llamo al plugin
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+```
+debajo de modules
+
+```js
+    plugins: [
+        new HtmlWebpackPlugin({
+            //template que buscará para compilar
+            template: './src/templates/index.html'
+        }),
+```
+
+genero carpeta `src/templates/` y meto dentro del `index.html`.  
+En el index.html no necesitamos el script este: ` <script type="module" src="dist/home.bundle.js"></script>` porque webpack lo incrustará
+
+Si te vas a `dist` verás un index.html con lo mismo, y a partir de ahora la app atacará a este `dist/index.html` cuando compile la app.
+
+Verás ahora que la imagen del logo tiene problemas. Veta al `template/index.html` y busca la linea del logo.
+cambias esto:
+```html
+<img src="../img/logo.png"" alt="Quidditch Games XV">
+
+// por esto
+
+<img src="<%=require("../img/logo.png")%>" alt="Quidditch Games XV">
+
+```
+
+Ahora tenemos errores porque no lee las imagenes por eso vamos a cargar el LOADER. Añadimos en `weppack.exports`
+
+```js
+            {
+                test: /\.(png|jpg|gif)$/i,
+                type: 'assrt/resource'
+            }
+
+// estas lineas van en rules de module
+
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.(png|jpg|gif)$/i, // metemos todas la imagenes
+                type: 'asset/resource'
+            }
+        ]
+    },
+```
+
+
+
+
+si te vas a mirar el `dist/index.html`verás como el logo de la cabecera ha cambiado, ha añadido el hash de la imagen `<img src="9a96fe53e9bb753456d6.png" alt="Quidditch Games XV">`
+
+volvemos al `template/index.html`
+
+``html
+<footer class="footer">
+        <img src="img/logo.png" alt="Harry Potter - Quidditch Games XV">
+
+//cambiamos por
+
+ <footer class="footer">
+        <img src="<%=require("../img/logo.png")%>" alt="Harry Potter - Quidditch Games XV">
+```
+
+aún tenemos herrores pero ahora lo veremos.
+
+- Ahora migramos las otras html a dentro templates/
+- Cambiamos las lineas del logos `<img src="<%=require("../img/logo.png")%>"`
+  
+  Cuando trabajemos con framesworks no haremos tantas cositas así
 
