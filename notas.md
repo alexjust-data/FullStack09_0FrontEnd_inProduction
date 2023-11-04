@@ -942,7 +942,7 @@ Vamos a pasar 404.html y realizar todo el proceso hecho hasta aquí para esta p�
 
 ---
 
-**DevServer**
+### DevServer
 
 Ahora falta configurar nuestro entorno. Vamos a configurar nuestros escripts de desarrollo `package.json`
 
@@ -985,4 +985,45 @@ Si inspeccionas verás en consola `[HMR] Waiting for update signal from WDS...` 
 Hot Module Replacement, te permite modificar mietras está corriendo tu aplicación, puedes leer la doc.
 
 EN REACT ESTO (Hot Module Replacement) YA ESTÁ IMPLEMENTADO EN PRODUCCION. En un ecommerce los productos cambian cada 5 minutos es una ifo de la bbdd que genera un template, esto te permite servir html cargar informacion dinamicamente, por ejemplo una seccion de ofertas, entonces, te permite enviar al usuario la seccion o mudulo reemplazado por uno nuevo sin renderizar (ESO LO IMPLEMENTE NETS EN REACT). Next, te permite crear páginas renderizadas en el backend y luego lo enviamos al usuario.
+
+¿Qué nos permite hacer el HMR?
+
+tu puedes ir directamente al `_form.css` y lo que cambies se cambiará sin más en el fronted sin hacernada más. Esto es potente porque si en el formulario tiene 35 entradas y quieres cambiar el color del texto, deberías verificar cada entrada, en cambio aquí sólo tocas una cosa y se cambia.
+
+Con el html me esta dando probelmas creo que por que hay plugins que no son compatibles, intento:
+
+webpack.config
+```js
+devServer: {
+    hot: true
+}
+```
+Pero no funciona
+
+webpack.config
+```js
+    devServer: {
+        hot: true,
+        watchFiles: ['src/**/*'] // pero me recarga la página con el cambio
+    },
+    resolve: {
+````
+lo interesante es que lo haga sin recargar la página, pero quizás si nos interesa podríamos pagar este precio a cambio de que lo puedas hacer...
+
+...quizás más adelante si investigas como hacer encuentra una solucion para hacer exactamente lo mismo que haces para css como para html. De momento lo quito `watchFiles: ['src/**/*']`
+
+
+### SASS
+ Es un pre-procesador de css
+
+Es una herramienta que nos permite con una sintaxis ligeramente diferente a css acabar obteniendo css entendible por el ordenador.
+
+Añade características dinámicas a CSS como mixin, funciones... 
+
+Ventajas:
+● Desarrollo de CSS más rápido
+● Mejor mantenimiento del código 
+
+Inconvenientes
+● Hay que procesar SASS cada vez que hacemos un cambio para obtener el CSS modificado
 
