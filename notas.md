@@ -1014,7 +1014,8 @@ lo interesante es que lo haga sin recargar la página, pero quizás si nos inter
 
 
 ### SASS
- Es un pre-procesador de css
+
+Es un pre-procesador de css
 
 Es una herramienta que nos permite con una sintaxis ligeramente diferente a css acabar obteniendo css entendible por el ordenador.
 
@@ -1026,4 +1027,170 @@ Ventajas:
 
 Inconvenientes
 ● Hay que procesar SASS cada vez que hacemos un cambio para obtener el CSS modificado
+
+https://www.sassmeister.com/
+
+de `scss` to `css`
+
+![]('./../src/img/sass.png')
+
+**Permite declarar porciones de codigo que reutilizaremos en diferentes sitios**
+
+
+![]('./../src/img/sass1.png')
+
+ejemplo app real, en cascada se queda con las variable y al final retocamos las variables que queramos
+
+![]('./../src/img/sass2.png')
+
+Operadores matemáticos y funciones
+
+![]('./../src/img/sass3.png')
+
+Clases , bloques, bucles
+
+![]('./../src/img/sass4.png')
+
+¿para qué un bucle? hay  fremawords que lo usan bastante: fíjate en la siguiente imagen y mira los tamaños
+
+![]('./../src/img/sass5.png')
+
+
+https://www.npmjs.com/package/sass
+
+
+
+**PASAMOS DE CSS A SCSS**
+
+metemos todos los archivos parciales en la nueva carpeta `/partial/_archivo.scss`
+
+1. Cambiamos las extensiones de home.css, _reset.css, _home.css, _common.css
+
+```css
+// home.css de...
+@import url('./_common.css');
+@import url('./_home.css');
+@import url('./_reset.css');
+
+// a ...
+@import './partial/common';
+@import './partial/home';
+@import './partial/reset';
+```
+
+**Atención** @import ya está en desuso porque lo importa todo de manera glocal, entonces hemos de usar `@use` o `@forward`
+
+
+Modifcamos archivos, _common.scss a codigo scss [mira el codigo y lo he marcado en comentarios]
+POr ejemplo en _commons
+
+```css
+  .navbar {
+    width: 100%;
+    box-shadow: 0 1px 4px rgb(146 161 176 / 65%);
+  }
+  .navbar .menu-items {
+    display: flex;
+  }
+```
+
+```scss
+
+  .navbar {
+    width: 100%;
+    box-shadow: 0 1px 4px rgb(146 161 176 / 65%);
+    .menu-items {
+        display: flex;
+    }
+  }
+```
+
+así hasta completar todo
+
+2. npm i -D sass sass-loader
+   ``webpack.config` le hemos de decir `rules` que todos los ficheros que pasen por 
+```json
+            {
+                test: /\.s[ac]ss$/i,
+                type: ['style-loader', 'css-loader', 'sass-loader'],
+            }
+```
+
+para que funcines como hemos modificado el home.scsc ahora en el homePage.js hemos de cambiar
+
+```js
+import './home'
+import './styles/home.scss' // esto a scss
+```
+
+npm run build
+
+nos da errores de los ficheros de importacion css. solucion facil y rápida en vez de cambiar todo, es cambiar el nombre de todos los ficheros de `css` a `scss`
+
+además cambiamos 
+
+```scss
+@import './common';
+@import './team';
+@import './reset';
+```
+
+cambio el nombre de la carpeta a `styles`
+
+---
+
+en `_commons.scss` tenemos estas variables dentro del archivo
+
+```scss
+// Variables SCSS
+$header-font-family: 'Poltawski Nowy', serif;
+$body-font-family: 'Public Sans', sans-serif;
+$nav-height: 62px;
+$bg-color: #f0f0f0;
+$bg-color-light: #f8f8f8;
+$gold-color: rgb(202, 172, 0);
+```
+
+es mejor que nos las llevemos a otro archivo nuevo de `_variables.scss` 
+Em _commons.scsc añadimos el concepto de @use
+
+```scss
+@use './varibales' as var;
+
+// y a cada varibla sustituyo por var
+
+font-family: $body-font-family;
+//por
+font-family: var.$body-font-family;
+
+```
+
+¿qué sucede si yo quiero utilizar variables de una archivo a otro:
+
+que debo crear una archivo nueva `/partials/_mixin.scss` y metemos las variables 
+
+```scss
+$TABLET_WIDTH: 768px;
+$LAPTOP_WIDTH: 1200px;
+$LARGE-WIDTH: 1440px;
+
+@mixin tablet {
+    @media (min-width: $TABLET_WIDTH ){
+        @content;
+    }
+}
+@mixin laptop {
+    @media (min-width: $LAPTOP_WIDTH ){
+        @content;
+    }
+}
+@mixin large {
+    @media (min-width: $LARGE-WIDTH ){
+        @content;
+    }
+}
+
+```
+
+si quieres saber los breakpoints más utilizados en la actualidad te vas a boostarpc y "aviable breakpoints"
 

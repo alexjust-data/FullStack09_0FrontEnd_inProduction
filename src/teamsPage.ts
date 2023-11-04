@@ -1,2 +1,2 @@
 import './team'
-import './css/team.css'
+import './styles/team.scss'

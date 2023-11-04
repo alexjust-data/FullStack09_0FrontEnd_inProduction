@@ -1,0 +1,66 @@
+@use "./variables" as var;
+@use './mixins' as mixins;
+
+div.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 3rem 0;
+  form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    @include mixins.tablet {
+      width: 50%;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.2rem;
+    }
+    textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.2rem;
+    }
+    button {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.2rem;
+      background-color: var.$gold-color;
+      color: #4d3c3c;
+      font-weight: 600;
+      font-family: var.$body-font-family;
+      text-transform: uppercase;
+      font-size: 1.1rem;
+      cursor: pointer;
+      &:hover {
+        background-color: #fff;
+        color: var.$gold-color;
+      }
+    }
+    span.error {
+      color: var.$form-error;
+      font-family: var.$body-font-family;
+      font-size: 0.8rem;
+      align-self: flex-start;
+    }
+  }
+  label {
+    font-family: var.$header-font-family;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+  }
+}

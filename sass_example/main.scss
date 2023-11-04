@@ -1,0 +1,129 @@
+/* Header */
+// Header
+// TEST IN: https://www.sassmeister.com/
+
+$primary-color: #5e4c4b;
+$common-text: 'Poltawski Nowy', serif;
+$gradient: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(5,4,77,1) 17%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+
+h1 {
+    color: $primary-color;
+}
+
+.card {
+    border-radius: 10px;
+    border: 1px solid red;
+}
+
+div.grid-products {
+    font-size: 1.2rem;
+    color: $primary-color;
+    .card {
+        border-radius: 15px;
+        span {
+            font-size: 10px;
+        }
+    }
+}
+
+.container {
+    max-width: 1420px;
+    &-fluid {
+        max-width: 100%;
+    }
+}
+
+.button {
+    background-color: $primary-color;
+    &.danger {
+        span.icon {
+            border-radius: 50%;
+        }
+        &::hover {
+            border: 1px solid green;
+        }
+     background-color: red;
+    }
+    &::hover {
+        background-color: brown;
+    }
+}
+
+
+.main {
+    width: 100%;
+}
+
+%text-bold {
+    font-weight: 700;
+    color: black;
+    text-decoration: underline;
+}
+
+.main {
+    h1 {
+        @extend %text-bold;
+    }
+}
+
+
+@media screen and (min-width: 768px) {
+    .main {
+        width: 730px;
+        margin: 0 auto;
+    }
+}
+
+$tablet-width: 768px;
+
+@mixin tablet {
+    @media screen and (min-width: $tablet-width) {
+        @content;
+    }
+}
+
+$tablet-width: 767;
+$font-scale: 1.1;
+
+.main {
+    width: 100%;
+    @include tablet {
+        width: 730px;
+        margin: 0 auto;
+    }
+}
+
+p {
+    font-size: 16 * $font-scale +1 - 15 px;
+    width: #{$tablet-width - 10}rem;
+}
+
+@function calculateRem($size) {
+    $remSize: $size / 16;
+    @return #{$remSize}rem;
+}
+
+button {
+    font-size: calculateRem(12);
+}
+
+// Bucles
+@for $i from 1 through 10 {
+    .p-#{$i} {
+        padding: #{$i}px;
+    }
+}
+
+
+$icons: facebook, twitter, instagram, x;
+@each $icon in $icons {
+    .#{$icon}_icon {
+        background: url('/img/icons/#{$icon}.png');
+    }
+}
+
+
+
+
+
+

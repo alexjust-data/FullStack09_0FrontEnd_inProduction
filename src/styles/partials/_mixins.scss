@@ -1,0 +1,21 @@
+$TABLET_WIDTH: 768px;
+$LAPTOP_WIDTH: 1200px;
+$LARGE_WIDTH: 1440px;
+
+@mixin tablet {
+    @media (min-width: $TABLET_WIDTH) {
+        @content;
+    }
+}
+
+@mixin laptop {
+    @media (min-width: $LAPTOP_WIDTH) {
+        @content;
+    }
+}
+
+@mixin large {
+    @media (min-width: $LARGE_WIDTH) {
+        @content;
+    }
+}

@@ -17,10 +17,13 @@ module.exports = {
         // path.resolve( __dirname, '...' , '...', 'dist' ) podrías subir de directorios
         clean: true
     },
+    devServer: {
+        hot: true,
+    },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
       },
-    module: {
+      module: {
         rules: [
             {
                 test: /\.css$/i,
@@ -33,10 +36,15 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|gif|webp|ico)$/i,
-                type: 'asset/resource'
-            }
+                type: 'asset/resource',
+            },
+            {
+                test: /\.s[ac]ss$/i,
+                use: ['style-loader', 'css-loader', 'sass-loader'], // Aquí fue corregido
+            },
         ]
     },
+    
     plugins: [
         new HtmlWebpackPlugin({
             //template que buscará para compilar
