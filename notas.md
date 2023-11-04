@@ -953,4 +953,36 @@ Ahora falta configurar nuestro entorno. Vamos a configurar nuestros escripts de 
   },
 ```
 
+instalamos la dependencia
+
+```sh
+npm install -D webpack-dev-server
+```
+
+añado el scrip en `package.json`
+
+```json
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "dev": "webpack server"
+  },
+```
+y reinicio ` npm run dev` y vemos que nos escupe cosas diferentes
+
+```sh
+<i> [webpack-dev-server] Project is running at:
+<i> [webpack-dev-server] Loopback: http://localhost:8080/
+<i> [webpack-dev-server] On Your Network (IPv4): http://192.168.1.71:8080/
+<i> [webpack-dev-server] On Your Network (IPv6): http://[fe80::1]:8080/
+<i> [webpack-dev-server] Content not from webpack is served from '/Users/alex/Desktop/frontend-pro-main/public' directory
+```
+
+si abrimos `http://localhost:8080/` veremos donde estamos
+A partir de ahora tu puedes is al `/tempalte` que quiera y directamente te permite modificar la plantilla html y verás los cambios reflejados directamente en web, sin preocuparte de nada más, si recompilar la aplicacion lo actualiza, ni preocuparte de los assets.
+
+Si inspeccionas verás en consola `[HMR] Waiting for update signal from WDS...` HMR es una propiedad que permite que la palicacion actualce las partes solo que necesita.
+Hot Module Replacement, te permite modificar mietras está corriendo tu aplicación, puedes leer la doc.
+
+EN REACT ESTO (Hot Module Replacement) YA ESTÁ IMPLEMENTADO EN PRODUCCION. En un ecommerce los productos cambian cada 5 minutos es una ifo de la bbdd que genera un template, esto te permite servir html cargar informacion dinamicamente, por ejemplo una seccion de ofertas, entonces, te permite enviar al usuario la seccion o mudulo reemplazado por uno nuevo sin renderizar (ESO LO IMPLEMENTE NETS EN REACT). Next, te permite crear páginas renderizadas en el backend y luego lo enviamos al usuario.
 
