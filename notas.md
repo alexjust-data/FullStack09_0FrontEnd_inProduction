@@ -1032,28 +1032,28 @@ https://www.sassmeister.com/
 
 de `scss` to `css`
 
-![]('./src/img/sass.png')
+![](src/img/sass.png)
 
 **Permite declarar porciones de codigo que reutilizaremos en diferentes sitios**
 
 
-![]('./src/img/sass1.png')
+![](src/img/sass1.png)
 
 ejemplo app real, en cascada se queda con las variable y al final retocamos las variables que queramos
 
-![]('./src/img/sass2.png')
+![](src/img/sass2.png)
 
 Operadores matemáticos y funciones
 
-![]('src/img/sass3.png')
+![](src/img/sass3.png)
 
 Clases , bloques, bucles
 
-![]('../src/img/sass4.png')
+![](src/img/sass4.png)
 
 ¿para qué un bucle? hay  fremawords que lo usan bastante: fíjate en la siguiente imagen y mira los tamaños
 
-![]('./../src/img/sass5.png')
+![](src/img/sass5.png)
 
 
 https://www.npmjs.com/package/sass
@@ -1471,7 +1471,7 @@ Ahora si vas a cambiar cualquier cosa por ejemplo en `styles/partials/_reset.scs
 
 Aún tenemosun pequeño problmea. Cuando arrancas el npm run dev, y cargas la portada puedes ver esto:
 
-![]('./src/img/error.png')
+![](src/img/error.png)
 
 y esto quiere decir que carga stilos de css, ahora no nos damos cuenta al cargar porque es un proyecto pequeño, pero cuando sea grande puede que tarde milisegundos en cargar los estilos de la página. Entonces vamos a instalar un plugon que recoje el css que está en nuestro `entryPoint` se lo lleva y lo inyecta en el `/template/html` , esto va en produccion, entonces voy a `webpack.prod`
 
@@ -1508,7 +1508,7 @@ verás
 
 le estas diciendo que los archivos que entran .css pasen por el `sass-loader` para convertirlos a csss, que pasen por el `css-loader` para que nuestro `entryPoint` se acaba de hacer un import de nuestro archivo css y que pase por `style-loader`; ¿Quien es el encargado de que ese archivo acave aquí? 
 
-![]('./src/img/error.png')
+![](src/img/error.png)
 
 el `style-loader` lo incrusta aqui. Así que vamos a cambiarle la regla en producción. 
 
@@ -1587,7 +1587,7 @@ y en webpack.prod
 
 Ahora podemos ver de nuevo en el head que nos ha importado con el nombre cambiado
 
-![]('./src/img/cambio.png')
+![](src/img/cambio.png)
 
 
 **para comprimir ficheros css**
