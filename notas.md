@@ -1032,28 +1032,28 @@ https://www.sassmeister.com/
 
 de `scss` to `css`
 
-![]('./../src/img/sass.png')
+![]('./src/img/sass.png')
 
 **Permite declarar porciones de codigo que reutilizaremos en diferentes sitios**
 
 
-![]('./../src/img/sass1.png')
+![]('./src/img/sass1.png')
 
 ejemplo app real, en cascada se queda con las variable y al final retocamos las variables que queramos
 
-![]('./../src/img/sass2.png')
+![]('./src/img/sass2.png')
 
 Operadores matemáticos y funciones
 
-![]('./../src/img/sass3.png')
+![]('./src/img/sass3.png')
 
 Clases , bloques, bucles
 
-![]('./../src/img/sass4.png')
+![]('./src/img/sass4.png')
 
 ¿para qué un bucle? hay  fremawords que lo usan bastante: fíjate en la siguiente imagen y mira los tamaños
 
-![]('./../src/img/sass5.png')
+![]('./src/img/sass5.png')
 
 
 https://www.npmjs.com/package/sass
@@ -1218,6 +1218,430 @@ Vamos a trabajar esto dependiendo en el entron en el que estemos.
 
 **Varibales de entorno** : es un valor, un nombre, una variable que asignamos a nivel de sistema operativo, y que nuestra aplicación es capaz de leer. Lo utilizaremos mucho sobre todo trabajando en la parte de backend aunque en frontned tbn se utiliza que no queremos que form parte de nuestro codigo, como passport, etc todo lo que sean SECRETS
 
-```JS
+En package.json, si trabajamos con mc o linux y en scripts le digo `"build": "NODE_ENV = production webpack";`
 
+```JS
+  "scripts": {
+    "build": "NODE_ENV = production webpack",
+    "watch": "webpack --watch",
+    "dev": "webpack server"
+  },
 ```
+
+le estas diciendo que primero es esta variable de entorno `production` y luego llamar a este script `webpack`. Pero el problmea es que en windows no funcionan esto!! Entonces utilizaremos :
+
+https://www.npmjs.com/package/cross-env `cros-env` y esto funciona en cualquier sistema operativo
+
+lo instalamos `npm i -D cross-env`
+
+```JS
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack",
+    "watch": "webpack --watch",
+    "dev": "webpack server"
+  },
+```
+
+esta variable de entorno `NODE_ENV` está vacío cada vez que llega allí, si la pintas en consola `echo $NODE_ENV` no tiene nada.
+
+Vamos a `webpack.config` y comprovamos que la leee:
+
+`console.log('Variable de entorno NODE_ENV=${process.env.NODE_ENV}');`
+
+esto se lee desde la variable global `process` es decir desde cualquiere sitio tenemos acceso a ella; como el objeto window, ya está definido en el entorno de ejecucion, pon esto en consola `window.alert("hola alerta)`.
+
+ejecuta `npm run build`
+
+```sh
+Variable de entorno NODE_ENV=${process.env.NODE_ENV}
+```
+
+Ahora se la enchufo a mi webpack.config, de esta forma si no es true no utilizará el clean
+
+```js
+    output:{
+        filename: '[name].[chunkhash]bundle.js',
+        path: path.resolve( __dirname ,'dist' ),
+        clean: process.env.NODE_ENV = true
+            },
+    devServer: {
+        hot: true,
+    },
+```
+npm run dev
+
+Todo esto era porque cuando modificábamos una cosa del css las imágenes dejaban de funcionar. Si purebas ahora de modificar algo desde el css, verás como si funcionan. Entonces hemos conseguido que el `clean` no se lance a no ser que estemos haciendo un `dist` de producción.
+Podrías pensar que el clean lo hicimos para no acumular aquí en el dist 35 diferentes con un hash diferentes, pero tenemos que pensar que siempre que trabajamos en modo de desarrollo diferente, el  `devServer` a no ser que s elo digamos específicamente èl no genera este `dist` (sólo en memoria, funcniona pero sin carpeta dist)
+
+**problema** DE HACERLO ASÍ ES QUE en backen se pueden acumular muchas de estas variables `NODE_ENV=production webpack` y no podemos ir concatenando variable tras variable en etsa linea `"build": "cross-env NODE_ENV=production webpack"`.
+Entonces hay una librería muy conocida `dotenv` https://www.npmjs.com/package/dotenv npm que tiene los días contado porque node lo integra. Esta librería lee un fichero que crearemos y crea tantas variable de entorno como hay en el fichero.
+
+
+`npm i -D dotenv`
+
+**importante** en `.gitignore`
+Por defecto `dotenv` busca el archivo env, pues antes que nada el archivo `.env` lo hemos de colocar dentro, no queremos subirlo nunca.
+
+Después de ponerlo en git ignore, no creamos el archivo, y como buena práctica me creo un archivo de ejemplo.
+`.env`
+`.env.example` Este archivo es para que si un compañero continúa con la app, sepa que es lo mínimo que necesita para funcionar. **Esto es lo primero que se pide cuando comienzas a trabajar en un proyecto** las variables de entorno, la configuración del proyecto.
+
+Ahora ya no necesitas
+
+```js
+"build": "cross-env NODE_ENV=production webpack",
+
+lo cambiamos de nuevo por
+
+"build": "webpack",
+```
+
+y en webpack.confid añadimos `require('dotenv').config();` si este fichero no se llamara .env pues en config que se encarga de leer le diríamos s nombre `require('dotenv').config(.enviroment);`
+
+si te haces un build verás igual la variable en el entorno de produccion 
+
+```sh
+npm run build
+
+> frontend-pro-main@1.0.0 build
+> webpack
+
+Variable de entorno NODE_ENV=${process.env.NODE_ENV}
+```
+esto es que el `clean: process.env.NODE_ENV = true` está en true.
+
+Pero tenemos un problema, tener que ir haciendo esto en cada uno de los parámetros si es produccion o preproduccion, no es práctico:
+
+### webpack merge
+
+en proyecto profesionales no creamos tantos antornos webpack como entornos acabaremos teniendo y en fucnión de nuestro entorno acabaremos definiendo que condiguración tendrña nuestro webpack.
+
+CReamos 3 archhivos copia pega `webpack.config` uno para product, otro para desarrollo y otro para cosas comunes.
+
+**`webpack.dev`**
+Ahora queremos de aquí todo aqullo que no será lo estricto de desarrollo.
+
+Esro es transversal, lo necesitamos siempre, pues lo quito
+```js 
+    // entry: {
+    //     home: './src/homePage.ts',
+    //     teams: './src/teamsPage.ts',
+    //     contact: './src/contactPage.ts',
+    //     error: './src/errorPage.ts',
+    // },
+
+    output:{
+        //filename: '[name].[chunkhash]bundle.js', // esto siempre estará, es comun, lo quitamos
+        //path: path.resolve( __dirname ,'dist' ),  // esto siempre estará, es comun, lo quitaos
+        clean: false, // esto aplicará false en desarrollo
+    },
+
+    // resolve: { 
+    //     extensions: ['.tsx', '.ts', '.js'], // esto era cuando la app miraba de js a ts FUERA
+    // },
+
+    // modulos y plugons son los mismo para desarrollo y produccion , es de cir comun, FUERA
+
+    //  module: {
+    // },
+
+    // plugins: [
+    // ]
+```
+
+así ha quedado
+
+```js
+const { merge } = require('webpack-merge'); // devuelve un objeto y yo solo quiero la propiedad merge
+const defaultConfig = require('./webpack.common');
+// require('dotenv').config();
+
+// console.log('Variable de entorno NODE_ENV=${process.env.NODE_ENV}');
+
+// aquí vemos que dev devuelve objeto nuevo con la suma de "defaultConfig" + lo otro
+module.exports = merge(defaultConfig, {
+    mode: 'development', 
+    devtool: 'inline-source-map', 
+    output:{
+        clean: false, // en common sobre escribirá a false
+    }
+});
+```
+
+**`webpack.prod`**
+```js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+// require('dotenv').config();
+// console.log('Variable de entorno NODE_ENV=${process.env.NODE_ENV}');
+
+module.exports = {
+    // entry: {
+    //     home: './src/homePage.ts',
+    //     teams: './src/teamsPage.ts',
+    //     contact: './src/contactPage.ts',
+    //     error: './src/errorPage.ts',
+    // },
+    mode: 'production', 
+    devtool: 'source-map', // para inspeccinoar cosas, genera un json con los mapas de la app
+    output:{
+        // filename: '[name].[chunkhash]bundle.js',
+        // path: path.resolve( __dirname ,'dist' ),
+        clean: true
+    },
+    // resolve: {
+    //     extensions: ['.tsx', '.ts', '.js'],
+    //   },
+    //   module: {
+    //     rules: [
+    //         {
+    //             test: /\.css$/i,
+    //             use: ['style-loader', 'css-loader'],
+    //         },
+    //         {
+    //             test: /\.tsx?$/,
+    //             use: 'ts-loader',
+    //             exclude: /node_modules/,
+    //         },
+    //         {
+    //             test: /\.(png|jpg|gif|webp|ico)$/i,
+    //             type: 'asset/resource',
+    //         },
+    //         {
+    //             test: /\.s[ac]ss$/i,
+    //             use: ['style-loader', 'css-loader', 'sass-loader'], // Aquí fue corregido
+    //         },
+    //     ]
+    // },
+    
+    // plugins: [
+    //     new HtmlWebpackPlugin({
+    //         //template que buscará para compilar
+    //         template: './src/templates/index.html',
+    //         filename: 'index.html',
+    //         chunks: ['home'], // añado esta linea para selecciono el bundels de output
+    //     }),
+    //     new HtmlWebpackPlugin({
+    //         template: './src/templates/teams.html',
+    //         filename: 'teams.html',
+    //         chunks: ['teams']
+    //     }),
+    //     new HtmlWebpackPlugin({
+    //         template: './src/templates/contact.html',
+    //         filename: 'contact.html',
+    //         chunks: ['contact']
+    //     }),
+    //     new HtmlWebpackPlugin({
+    //         template: './src/templates/404.html',
+    //         filename: '404.html',
+    //         chunks: ['error'],
+    //     }),
+    // ]
+}
+```
+
+si cargar npm run 
+verás que se queja, hay que dicrle que coje el de produccion o el de desarrollo, `packjson.json`
+
+```json
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "watch": "webpack --watch --config webpack.dev.js",
+    "dev": "webpack serve --open --config webpack.dev.js"
+  },
+```
+
+esto creará ficheros js de una sola linea en dist
+
+
+**`webpack.common`**
+
+quito el `mode:` y el `clean:`
+quiero `console.log('Variable de entorno NODE_ENV=${process.env.NODE_ENV}');`
+quito `require('dotenv').config();`
+
+
+---
+A partir de ahora esto ya se parece a un proyecto profesional. Si un día viene el jefe y te dice que hay que cambiar algo, tu ya lo tienes todo separado por ficheros y es facil de mantener, esto es lo que hemos ehco, que sea facil de mantener. Hemos conseguido que si mañana en vez de 4 páginas tenga 44, es igual de fácil de mantener.
+
+Ahora si vas a cambiar cualquier cosa por ejemplo en `styles/partials/_reset.scss`se cambiará directamente.
+
+
+---
+
+Aún tenemosun pequeño problmea. Cuando arrancas el npm run dev, y cargas la portada puedes ver esto:
+
+![]('./src/img/error.png')
+
+y esto quiere decir que carga stilos de css, ahora no nos damos cuenta al cargar porque es un proyecto pequeño, pero cuando sea grande puede que tarde milisegundos en cargar los estilos de la página. Entonces vamos a instalar un plugon que recoje el css que está en nuestro `entryPoint` se lo lleva y lo inyecta en el `/template/html` , esto va en produccion, entonces voy a `webpack.prod`
+
+`npm i -D mini-css-extract-plugin`  https://webpack.js.org/plugins/mini-css-extract-plugin/
+
+
+```js
+const { merge } = require('webpack-merge'); 
+const defaultConfig = require('./webpack.common');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = merge(defaultConfig, {
+    mode: 'production', 
+    devtool: 'source-map', 
+    output:{
+        clean: true,
+    },
+    plugins: [
+        new MiniCssExtractPlugin()
+    ]
+});
+```
+
+Y no hace nnada porque a todo aqullo que entre por el entryPoint hemos de decirle como tiene que tratarlo. Si te vas a `webpack.common`
+
+verás
+
+```js
+    {
+        test: /\.s[ac]ss$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader'], // Aquí fue corregido
+    },
+```
+
+le estas diciendo que los archivos que entran .css pasen por el `sass-loader` para convertirlos a csss, que pasen por el `css-loader` para que nuestro `entryPoint` se acaba de hacer un import de nuestro archivo css y que pase por `style-loader`; ¿Quien es el encargado de que ese archivo acave aquí? 
+
+![]('./src/img/error.png')
+
+el `style-loader` lo incrusta aqui. Así que vamos a cambiarle la regla en producción. 
+
+```js
+const { merge } = require('webpack-merge'); 
+const defaultConfig = require('./webpack.common');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = merge(defaultConfig, {
+    mode: 'production', 
+    devtool: 'source-map', 
+    output:{
+        clean: true,
+    },
+    module: {
+        rules: [
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    // 'style-loader', // esto no interesa
+                    MiniCssExtractPlugin.loader,
+                    'css-loader', 
+                    'sass-loader'
+                ],
+            }
+        ],
+    },
+    plugins: [
+        new MiniCssExtractPlugin()
+    ]
+});
+```
+
+Repasamos que está pasando:
+
+1. Definimos el entrry point de home (webpack.common):
+   ```js
+    entry: {
+        home: './src/homePage.ts',
+   ```
+2. Le hemos dicho que el `filename: 'index.html',` acabe en el `template: './src/templates/index.html'` cogiendo el chunk home `chunks: ['home']` 
+   ```js
+    plugins: [
+        new HtmlWebpackPlugin({
+            //template que buscará para compilar
+            template: './src/templates/index.html',
+            filename: 'index.html',
+            chunks: ['home'], // añado esta linea para selecciono el bundels de output
+        }),
+   ```
+3. ese css que hablamos antes lo importamos dentro del entryPoint `home: './src/homePage.ts',` y cuando lo pasamos por el `MiniCssExtractPlugin.loader,` de **webpack.prod**  lo que hace es:
+         1. Tengo un archivo que me han importado de este entryPoint `home: './src/homePage.ts',`
+         2. Por lo tanto yo ya se que lo tengo que incrustar quí dentro: (porque el chunk que lo importa es este "home")
+```js
+    plugins: [
+        new HtmlWebpackPlugin({
+            //template que buscará para compilar
+            template: './src/templates/index.html',
+            filename: 'index.html',
+            chunks: ['home'], // añado esta linea para selecciono el bundels de output
+        }),
+```
+
+Qué se puede mejorar? que dentro de `dist/contact.css` no ha comvertido a `contact.css`, el mismo nombre. Esto es un problmea porque si mañana estamos en producción con un sistema de caché, el `contact.css` viejo y el nuevo son el mismo. Hemos de corregirlo para añadir el hash de produccion. Esto nos lo da el mismo plugin https://webpack.js.org/plugins/mini-css-extract-plugin/
+
+y en webpack.prod
+
+```js
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].[chunkhash].dundle.css', // añadimos la linea cambio de nombre
+        })
+    ]
+});
+```
+
+Ahora podemos ver de nuevo en el head que nos ha importado con el nombre cambiado
+
+![]('./src/img/cambio.png')
+
+
+**para comprimir ficheros css**
+
+`npm install css-minimizer-webpack-plugin --save-dev` y cambio `webpack.prod.js`
+
+```js
+    optimization: {
+        minimizer: {
+            new CssMinimizerPlugin(),
+        }
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].[chunkhash].dundle.css',
+        })
+    ]
+});
+```
+
+
+### eslint
+
+Paar depurar el codigo
+
+`npm init @eslint/config`
+```sh
+➜  frontend-pro-main git:(main) ✗ npm init @eslint/config
+✔ How would you like to use ESLint? · style
+✔ What type of modules does your project use? · esm
+✔ Which framework does your project use? · none
+✔ Does your project use TypeScript? · No / Yes
+✔ Where does your code run? · browser
+✔ How would you like to define a style for your project? · guide
+✔ Which style guide do you want to follow? · standard-with-typescript
+✔ What format do you want your config file to be in? · JSON
+Checking peerDependencies of eslint-config-standard-with-typescript@latest
+Local ESLint installation not found.
+The config that you've selected requires the following dependencies:
+
+eslint-config-standard-with-typescript@latest @typescript-eslint/eslint-plugin@^6.4.0 eslint@^8.0.1 eslint-plugin-import@^2.25.2 eslint-plugin-n@^15.0.0 || ^16.0.0  eslint-plugin-promise@^6.0.0 typescript@*
+✔ Would you like to install them now? · No / Yes
+✔ Which package manager do you want to use? · npm
+```
+esto crea un archivo `.eslintrc.json`
+
+
+### Vamos hacer lo mismo desde el inicio pero con PARCEL
+
+https://parceljs.org/
+
+Con 0 configuracion podemos trabajar.
+
+
+
+
+
