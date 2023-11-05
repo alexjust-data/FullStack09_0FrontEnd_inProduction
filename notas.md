@@ -1045,15 +1045,15 @@ ejemplo app real, en cascada se queda con las variable y al final retocamos las 
 
 Operadores matemáticos y funciones
 
-![]('./src/img/sass3.png')
+![]('src/img/sass3.png')
 
 Clases , bloques, bucles
 
-![]('./src/img/sass4.png')
+![]('../src/img/sass4.png')
 
 ¿para qué un bucle? hay  fremawords que lo usan bastante: fíjate en la siguiente imagen y mira los tamaños
 
-![]('./src/img/sass5.png')
+![]('./../src/img/sass5.png')
 
 
 https://www.npmjs.com/package/sass
