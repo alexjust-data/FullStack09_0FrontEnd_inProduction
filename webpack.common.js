@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-
 module.exports = {
     entry: {
         home: './src/homePage.ts',
@@ -9,16 +8,10 @@ module.exports = {
         contact: './src/contactPage.ts',
         error: './src/errorPage.ts',
     },
-    mode: 'development', 
     devtool: 'inline-source-map',
     output:{
         filename: '[name].[chunkhash]bundle.js',
         path: path.resolve( __dirname ,'dist' ),
-        // path.resolve( __dirname, '...' , '...', 'dist' ) podrías subir de directorios
-        clean: true
-    },
-    devServer: {
-        hot: true,
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],

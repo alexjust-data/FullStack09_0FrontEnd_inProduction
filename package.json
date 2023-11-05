@@ -1,18 +1,24 @@
+
 {
-  "name": "frontend-pro-main",
+  "name": "frontend-pro",
   "version": "1.0.0",
   "description": "Proyecto del módulo de Frontend PRO del Bootcamp de Web de KeepCoding.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack --watch",
-    "dev": "webpack server"
+    "build": "webpack --config webpack.prod.js",
+    "watch": "webpack --watch --config webpack.dev.js",
+    "dev": "webpack serve --open --config webpack.dev.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "browserslist": [
+    "> .05%"
+  ],
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "css-loader": "^6.8.1",
+    "dotenv": "^16.3.1",
     "html-webpack-plugin": "^5.5.3",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",

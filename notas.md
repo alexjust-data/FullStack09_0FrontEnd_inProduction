@@ -1194,3 +1194,30 @@ $LARGE-WIDTH: 1440px;
 
 si quieres saber los breakpoints más utilizados en la actualidad te vas a boostarpc y "aviable breakpoints"
 
+
+Cambiamos las formas de importar por **@forward**
+
+---
+
+
+### Weppack Merge
+
+Ahora tenemos una regla `clean: true` es decir cada vez que generamos nuestro banner d ela palicacion , nuestro directoio de `/dist` se limpia. Cuando estamos trabajado con el servidor de desarrollo
+
+```js
+    output:{
+        filename: '[name].[chunkhash]bundle.js',
+        path: path.resolve( __dirname ,'dist' ),
+        // path.resolve( __dirname, '...' , '...', 'dist' ) podrías subir de directorios
+        clean: true
+```
+
+npm run dev : funciona bien, hacemos cualquier cambio , por ejemplo de la varibale de color... y nuestras imagenes dejan de funcionar. Esto es porque wepack utiliza por defecto el HMR por lo tando el sustituye lo que cree que es necesario.Pero entra en conflicto con el `CLEAN`
+
+Vamos a trabajar esto dependiendo en el entron en el que estemos. 
+
+**Varibales de entorno** : es un valor, un nombre, una variable que asignamos a nivel de sistema operativo, y que nuestra aplicación es capaz de leer. Lo utilizaremos mucho sobre todo trabajando en la parte de backend aunque en frontned tbn se utiliza que no queremos que form parte de nuestro codigo, como passport, etc todo lo que sean SECRETS
+
+```JS
+
+```
